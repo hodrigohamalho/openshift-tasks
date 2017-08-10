@@ -4,6 +4,8 @@ items:
   apiVersion: "v1"
   metadata:
     name: "tasks-pipeline"
+    annotations:
+          pipeline.alpha.openshift.io/uses: '[{"name": "tasks", "namespace": "", "kind": "DeploymentConfig"}]'
   spec:
     source:
       type: "Git"
