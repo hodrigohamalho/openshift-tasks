@@ -14,7 +14,7 @@ node('maven') {
     // Get Source Code from SCM (Git) as configured in the Jenkins Project
     // Next line for inline script, "checkout scm" for Jenkinsfile from Gogs
     //git 'http://gogs.xyz-gogs.svc.cluster.local:3000/CICDLabs/openshift-tasks.git'
-    checkout scm
+    git scm
   }
 
   // The following variables need to be defined at the top level and not inside
@@ -29,16 +29,19 @@ node('maven') {
 
     sh "${mvnCmd} clean package -DskipTests"
   }
+
   stage('Unit Tests') {
     echo "Unit Tests"
     sh "${mvnCmd} test"
   }
+
   stage('Code Analysis') {
     echo "Code Analysis"
 
     // Replace xyz-sonarqube with the name of your project
     sh "${mvnCmd} sonar:sonar -Dsonar.host.url=http://sonarqube.myproject.svc.cluster.local:9000/ -Dsonar.projectName=${JOB_BASE_NAME}"
   }
+
   stage('Publish to Nexus') {
     echo "Publish to Nexus"
 
@@ -100,7 +103,7 @@ node('maven') {
     echo "Active svc: " + active
     echo "Dest svc:   " + dest
   }
-  
+
   stage('Deploy new Version') {
     echo "Deploying to ${dest}"
 
@@ -132,10 +135,12 @@ def getVersionFromPom(pom) {
   def matcher = readFile(pom) =~ '<version>(.+)</version>'
   matcher ? matcher[0][1] : null
 }
+
 def getGroupIdFromPom(pom) {
   def matcher = readFile(pom) =~ '<groupId>(.+)</groupId>'
   matcher ? matcher[0][1] : null
 }
+
 def getArtifactIdFromPom(pom) {
   def matcher = readFile(pom) =~ '<artifactId>(.+)</artifactId>'
   matcher ? matcher[0][1] : null
