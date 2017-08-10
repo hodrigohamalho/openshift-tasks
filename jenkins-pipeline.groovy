@@ -11,10 +11,7 @@ node('maven') {
   def mvnCmd = "mvn -s ./nexus_openshift_settings.xml"
 
   stage('Checkout Source') {
-    // Get Source Code from SCM (Git) as configured in the Jenkins Project
-    // Next line for inline script, "checkout scm" for Jenkinsfile from Gogs
-    //git 'http://gogs.xyz-gogs.svc.cluster.local:3000/CICDLabs/openshift-tasks.git'
-    git scm
+    checkout scm
   }
 
   // The following variables need to be defined at the top level and not inside
