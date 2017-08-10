@@ -1,8 +1,15 @@
 #!groovy
 
-// Run this node on a Maven Slave
-// Maven Slaves have JDK and Maven already installed
-node('maven') {
+podTemplate(
+    inheritFrom: "maven",
+    label: "myJenkinsMavenSlave",
+    cloud: "openshift",
+    volumes: [
+        persistentVolumeClaim(claimName: "m2repo", mountPath: "/tmp/.m2")
+    ]) 
+{
+node('myJenkinsMavenSlave') {
+
     def devProject = 'tasks-dev';
     def prodProject = 'tasks-prod';
 
