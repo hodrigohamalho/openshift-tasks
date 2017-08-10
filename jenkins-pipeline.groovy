@@ -131,7 +131,7 @@ node('myJenkinsMavenSlave') {
         sh 'oc get route tasks -n ${prodProject} > oc_out.txt'
         oc_out = readFile('oc_out.txt')
         echo "Current route configuration: " + oc_out
-    }}
+    }}}
 
     // Convenience Functions to read variables from the pom.xml
     def getVersionFromPom(pom) {
@@ -148,4 +148,3 @@ node('myJenkinsMavenSlave') {
         def matcher = readFile(pom) =~ '<artifactId>(.+)</artifactId>'
         matcher ? matcher[0][1] : null
     }
-}
