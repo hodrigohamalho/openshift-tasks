@@ -59,6 +59,7 @@ node('myJenkinsMavenSlave') {
 
         // Copy the war file we just built and rename to ROOT.war
         sh "cp ./target/openshift-tasks.war ./ROOT.war"
+        sh "cp -r ./configuration ./"
 
         // Start Binary Build in OpenShift using the file we just published
         // Replace xyz-tasks-dev with the name of your dev project
