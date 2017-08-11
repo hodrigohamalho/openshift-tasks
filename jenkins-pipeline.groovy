@@ -54,8 +54,8 @@ node('myJenkinsMavenSlave') {
     }
 
     stage('Build OpenShift Image') {
-        def newTag = "TestingCandidate-${version}"
-        echo "New Tag: ${newTag}"
+        def newTag = "testing-candidate-${version}"
+        echo "--> new tag: ${newTag}"
 
         // Copy the war file we just built and rename to ROOT.war
         sh "cp ./target/openshift-tasks.war ./ROOT.war"
@@ -72,7 +72,7 @@ node('myJenkinsMavenSlave') {
         // Patch the DeploymentConfig so that it points to the latest TestingCandidate-${version} Image.
         // Replace xyz-tasks-dev with the name of your dev project
         sh "oc project ${devProject}"
-        sh "oc patch dc tasks --patch '{\"spec\": { \"triggers\": [ { \"type\": \"ImageChange\", \"imageChangeParams\": { \"containerNames\": [ \"tasks\" ], \"from\": { \"kind\": \"ImageStreamTag\", \"namespace\": \"${devProject}\", \"name\": \"tasks:$tagPrefix-$version\"}}}]}}' -n ${devProject}"
+        sh "oc patch dc tasks --patch '{\"spec\": { \"triggers\": [ { \"type\": \"ImageChange\", \"imageChangeParams\": { \"containerNames\": [ \"tasks\" ], \"from\": { \"kind\": \"ImageStreamTag\", \"namespace\": \"${devProject}\", \"name\": \"tasks:testing-candidate-$version\"}}}]}}' -n ${devProject}"
 
         openshiftDeploy depCfg: 'tasks', namespace: '${devProject}', verbose: 'false', waitTime: '', waitUnit: 'sec'
         openshiftVerifyDeployment depCfg: 'tasks', namespace: '${devProject}', replicaCount: '1', verbose: 'false', verifyReplicaCount: 'false', waitTime: '', waitUnit: 'sec'
@@ -84,7 +84,7 @@ node('myJenkinsMavenSlave') {
         // Could use the OpenShift-Tasks REST APIs to make sure it is working as expected.
 
         def newTag = "prod-ready-${version}"
-        echo "New tag: ${newTag}"
+        echo "--> new tag: ${newTag}"
 
         // Replace xyz-tasks-dev with the name of your dev project
         openshiftTag alias: 'false', destStream: 'tasks', destTag: newTag, destinationNamespace: '${devProject}', namespace: '${devProject}', srcStream: 'tasks', srcTag: 'latest', verbose: 'false'
