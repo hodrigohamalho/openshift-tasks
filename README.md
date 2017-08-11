@@ -32,7 +32,6 @@ REST Endpoints on OpenShift
 * Get all user tasks
 
   ```
-
   curl -u 'redhat:redhat1!' -H "Accept: application/json" -X GET http://tasks-dev.10.1.2.10.xip.io/ws/tasks
   ```
 
@@ -46,4 +45,22 @@ REST Endpoints on OpenShift
 
   ```
   curl -X GET http://tasks-dev.10.1.2.10.xip.io/demo/load/5 # 5 seconds
+  ```
+
+Using a private repo ?
+
+  ```
+  oc secrets new-basicauth gogs-secret --username=<user_name> --password=<password>
+  ```
+
+Builds are run with the builder service account, which must have access to any source clone secrets used. Access is granted with the following command:
+
+oc secrets link builder gogs-secret
+Set the build secret:
+
+  ```
+  oc set build-secret --source bc/tasks gogs-secret
+  oc secrets new-basicauth gogs-secret --username=<user_name> --password=<password>
+  oc secrets link builder gogs-secret
+  oc set build-secret --source bc/tasks gogs-secret
   ```
