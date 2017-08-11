@@ -10,7 +10,7 @@ items:
     source:
       type: "Git"
       git:
-        uri: "http://gogs.myproject.svc.cluster.local:3000/rramalho/openshift-tasks"
+        uri: "http://github.com/hodrigohamalho/openshift-tasks"
     strategy:
       type: "JenkinsPipeline"
       jenkinsPipelineStrategy:
